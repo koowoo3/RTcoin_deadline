@@ -20,7 +20,7 @@ namespace CryptoNote
 {
     namespace parameters
     {
-        const uint64_t DIFFICULTY_TARGET = 30; // seconds
+        const uint64_t DIFFICULTY_TARGET = 10; // seconds
 
         const uint32_t CRYPTONOTE_MAX_BLOCK_NUMBER = 500'000'000;
 
@@ -34,9 +34,9 @@ namespace CryptoNote
 
         const size_t CRYPTONOTE_MAX_TX_SIZE = 1'000'000'000;
 
-        const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 3914525;
+        const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x1592;
 
-        const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW = 40;
+        const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW = 10;
 
         const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT = 60 * 60 * 2;
 
@@ -49,7 +49,7 @@ namespace CryptoNote
         const size_t BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V3 = 11;
 
         // MONEY_SUPPLY - total number coins to be generated
-        const uint64_t MONEY_SUPPLY = UINT64_C(1'000'000'000'000'00);
+        const uint64_t MONEY_SUPPLY = UINT64_C(2100000000);
 
         const uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX = 187'000;
 
@@ -263,39 +263,7 @@ namespace CryptoNote
         static_assert(UPGRADE_VOTING_WINDOW > 1, "Bad UPGRADE_VOTING_WINDOW");
 
         /* Block heights we are going to have hard forks at */
-        const uint64_t FORK_HEIGHTS[] = {
-            187'000, // 0
-            350'000, // 1
-            440'000, // 2
-            620'000, // 3
-            700'000, // 4
-            800'000, // 5
-            1'000'000, // 6
-            1'200'000, // 7
-            1'300'000, // 8
-            1'400'000, // 9
-            1'600'000, // 10
-            1'800'000, // 11
-            2'000'000, // 12
-            2'200'000, // 13
-            2'400'000, // 14
-            2'600'000, // 15
-            2'800'000, // 16
-            3'000'000, // 17
-            3'200'000, // 18
-            3'400'000, // 19
-            3'600'000, // 20
-            3'800'000, // 21
-            4'000'000, // 22
-            4'200'000, // 23
-            4'400'000, // 24
-            4'600'000, // 25
-            4'800'000, // 26
-            5'000'000, // 27
-            5'200'000, // 28
-            5'400'000, // 29
-            5'500'000, // 30
-        };
+        const uint64_t FORK_HEIGHTS[] = {};
 
         /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
         const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX = 30;
@@ -326,7 +294,7 @@ namespace CryptoNote
         const char MINER_CONFIG_FILE_NAME[] = "miner_conf.json";
     } // namespace parameters
 
-    const char CRYPTONOTE_NAME[] = "TurtleCoin";
+    const char CRYPTONOTE_NAME[] = "RTcoin";
 
     const uint8_t TRANSACTION_VERSION_1 = 1;
 
@@ -361,9 +329,9 @@ namespace CryptoNote
     const uint64_t BLOCKS_SYNCHRONIZING_DEFAULT_COUNT = 100; // by default, blocks count in blocks downloading
     const size_t COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT = 1'000;
 
-    const int P2P_DEFAULT_PORT = 11'897;
+    const int P2P_DEFAULT_PORT = 10101;
 
-    const int RPC_DEFAULT_PORT = 11'898;
+    const int RPC_DEFAULT_PORT = 10102;
 
     const int SERVICE_DEFAULT_PORT = 8'070;
 
@@ -409,19 +377,14 @@ namespace CryptoNote
     const uint64_t LEVELDB_MAX_OPEN_FILES = 128; // 128 files
     const uint64_t LEVELDB_MAX_FILE_SIZE_MB = 1024; // 1024MB = 1GB
 
-    const char LATEST_VERSION_URL[] = "http://latest.turtlecoin.lol";
+    const char LATEST_VERSION_URL[] = "https://rtclskku.github.io/website/";
 
     const std::string LICENSE_URL = "https://github.com/turtlecoin/turtlecoin/blob/master/LICENSE";
 
     const static boost::uuids::uuid CRYPTONOTE_NETWORK = {
-        {0xb5, 0x0c, 0x4a, 0x6c, 0xcf, 0x52, 0x57, 0x41, 0x65, 0xf9, 0x91, 0xa4, 0xb6, 0xc1, 0x43, 0xe9}};
+        {0xb5, 0x0c, 0x4a, 0xf9, 0x91, 0xa4, 0xb6, 0x52, 0x57, 0xc1, 0x43, 0xe9, 0xcf, 0x6c, 0x41, 0x65}};
 
     const char *const SEED_NODES[] = {
-        "145.239.88.119:11897", // cision
-        "165.227.252.132:11897", // iburnmycd
-        "148.251.178.238:11897", // hv
-        "45.32.138.7:11897", // extra
-        "46.214.70.196:11897", // CuveeRO
-        "89.203.235.107:11897" // CuveeCZ
+        "115.145.173.17:10101" // lab server add
     };
 } // namespace CryptoNote

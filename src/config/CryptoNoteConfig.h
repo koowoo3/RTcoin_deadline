@@ -384,7 +384,7 @@ namespace CryptoNote
         {0xb5, 0x0c, 0x4a, 0xf9, 0x91, 0xa4, 0xb6, 0x52, 0x57, 0xc1, 0x43, 0xe9, 0xcf, 0x6c, 0x41, 0x65}};
 
     const char *const SEED_NODES[] = {
-        "172.21.146.48:10101" 	// sukmin PC
+        "172.21.146.48:10101", 	// sukmin PC
         "115.145.170.201:10101" // RTCL linux server
     };
 } // namespace CryptoNote

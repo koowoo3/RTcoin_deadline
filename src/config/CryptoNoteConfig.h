@@ -68,7 +68,7 @@ namespace CryptoNote
         static_assert(EMISSION_SPEED_FACTOR <= 8 * sizeof(uint64_t), "Bad EMISSION_SPEED_FACTOR");
 
 	//TODO: you need to generate genesis hex
-        const char GENESIS_COINBASE_TX_HEX[] = "010a01ff00013e029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880718401013283ea85031eb3a2234aeb5b2f855e179105fba09029531a112c3e5c411006a004000000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000006377a624fcbf110aea246a1e49e5777e72802df4f9ace2308965eb7324f21f209";
+        const char GENESIS_COINBASE_TX_HEX[] = "010a01ff00013e029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807184010175bbcc549b0b2caf047ad94658d740cb54b6c14110e74ff7c999f15cf84a1dc504000000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000006eec7e98aed7b3de89f5d746267e7e26024efb2fc2fb56aad69fb9a94c2fb5906";
 
         static_assert(
             sizeof(GENESIS_COINBASE_TX_HEX) / sizeof(*GENESIS_COINBASE_TX_HEX) != 1,
@@ -381,10 +381,10 @@ namespace CryptoNote
     const std::string LICENSE_URL = "https://github.com/turtlecoin/turtlecoin/blob/master/LICENSE";
 
     const static boost::uuids::uuid CRYPTONOTE_NETWORK = {
-        {0xb5, 0x0c, 0x4a, 0xf9, 0x91, 0xa4, 0xb6, 0x52, 0x57, 0xc1, 0x43, 0xe9, 0xcf, 0x6c, 0x41, 0x65}};
+        {0xb5, 0x1c, 0x5a, 0xf9, 0x91, 0xa4, 0xb6, 0x52, 0x57, 0xc1, 0x43, 0xe9, 0xcf, 0x6c, 0x41, 0x65}};
 
     const char *const SEED_NODES[] = {
-        "172.21.146.48:10101", 	// sukmin PC
-        "115.145.170.201:10101" // RTCL linux server
+        "115.145.170.194:10101",	// sukmin PC
+        "115.145.170.201:10101"		// RTCL linux server
     };
 } // namespace CryptoNote

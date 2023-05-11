@@ -20,6 +20,8 @@
 #include <utilities/ColouredMsg.h>
 #include <utilities/FormatTools.h>
 
+#include <system/Timer.h>
+
 namespace Miner
 {
     namespace
@@ -70,6 +72,8 @@ namespace Miner
         const CryptoNote::MiningConfig &config,
         const std::shared_ptr<httplib::Client> httpClient):
 
+	m_dispatcher(dispatcher),
+	m_sleepingContext(dispatcher),
         m_contextGroup(dispatcher),
         m_config(config),
         m_miner(dispatcher),
@@ -93,7 +97,9 @@ namespace Miner
         startBlockchainMonitoring();
         std::thread reporter(std::bind(&MinerManager ::printHashRate, this));
         // 내가 mining start
+        std::cout << SuccessMsg("\nMining until reporter, checktime ")<< SuccessMsg(m_config.checkTime) << "\n\n";
         startBlockchainChecker(m_config.checkTime);
+        std::cout << SuccessMsg("\nMining until checktime") << "\n\n";
         startMining(params);
 
         eventLoop();
@@ -223,13 +229,14 @@ namespace Miner
 
     void MinerManager::startBlockchainChecker(size_t checkTime)
     {
-        m_contextGroup.spawn(
-            [this]()
+        m_sleepingContext.spawn(
+            [this, checkTime]()
             {
                 try 
                 {
                     while (1) {
-                        std::this_thread::sleep_for(std::chrono::seconds(checkTime));
+                        System::Timer timer(m_dispatcher);
+                        timer.sleep(std::chrono::seconds(checkTime));
                         pushEvent(BlockMineStartEvent());
                     }
                 }

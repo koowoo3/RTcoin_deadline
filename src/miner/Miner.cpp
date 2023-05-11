@@ -8,6 +8,7 @@
 #include "Miner.h"
 //////////////////
 
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <common/CheckDifficulty.h>
 #include <common/StringTools.h>
 #include <crypto/crypto.h>
@@ -68,9 +69,7 @@ namespace CryptoNote
         
         boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
         std::string time_str = boost::posix_time::to_simple_string(now);
-        std::cout << InformationMsg(time_str) << InformationMsg(" Started mining for every ")
-                  << InformationMsg(blockMiningParameters.checkTime) << InformationMsg("seconds. Good luck!\n");
-
+        std::cout << InformationMsg(time_str) << InformationMsg(" Started mining. Good luck\n");
 
         try
         {

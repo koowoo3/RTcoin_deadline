@@ -36,6 +36,10 @@ namespace Miner
       private:
         System::ContextGroup m_contextGroup;
 
+        System::ContextGroup m_sleepingContext;
+
+        System::Dispatcher &m_dispatcher;
+
         CryptoNote::MiningConfig m_config;
 
         CryptoNote::Miner m_miner;

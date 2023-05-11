@@ -38,6 +38,13 @@ namespace Miner
             return event;
         }
 
+        MinerEvent BlockMineStartEvent()
+        {
+            MinerEvent event;
+            event.type = MinerEventType::BLOCK_MINE_START;
+            return event;
+        }
+
         void adjustMergeMiningTag(CryptoNote::BlockTemplate &blockTemplate)
         {
             if (blockTemplate.majorVersion >= CryptoNote::BLOCK_MAJOR_VERSION_2)
@@ -86,6 +93,7 @@ namespace Miner
         startBlockchainMonitoring();
         std::thread reporter(std::bind(&MinerManager ::printHashRate, this));
         // 내가 mining start
+        startBlockchainChecker(m_config.checkTime);
         startMining(params);
 
         eventLoop();
@@ -120,6 +128,15 @@ namespace Miner
 
             switch (event.type)
             {
+                case MinerEventType::BLOCK_MINE_START:
+                {
+                    CryptoNote::BlockMiningParameters params = requestMiningParameters();
+                    adjustBlockTemplate(params.blockTemplate);
+
+                    startBlockchainMonitoring();
+                    startMining(params);
+                    break;
+                }
                 case MinerEventType::BLOCK_MINED:
                 //내가 mine 성공함 
                 {
@@ -139,11 +156,11 @@ namespace Miner
                         }
                     }
 
-                    CryptoNote::BlockMiningParameters params = requestMiningParameters();
-                    adjustBlockTemplate(params.blockTemplate);
+                    //CryptoNote::BlockMiningParameters params = requestMiningParameters();
+                    //adjustBlockTemplate(params.blockTemplate);
 
-                    startBlockchainMonitoring();
-                    startMining(params);
+                    //startBlockchainMonitoring();
+                    //startMining(params);
                     break;
                 }
                 case MinerEventType::BLOCKCHAIN_UPDATED:
@@ -202,6 +219,24 @@ namespace Miner
     void MinerManager::stopMining()
     {
         m_miner.stop();
+    }
+
+    void MinerManager::startBlockchainChecker(size_t checkTime)
+    {
+        m_contextGroup.spawn(
+            [this]()
+            {
+                try 
+                {
+                    while (1) {
+                        std::this_thread::sleep_for(std::chrono::seconds(checkTime));
+                        pushEvent(BlockMineStartEvent());
+                    }
+                }
+                catch (const std::exception &)
+                {
+                }
+            });
     }
 
     void MinerManager::startBlockchainMonitoring()

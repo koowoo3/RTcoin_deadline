@@ -63,8 +63,14 @@ namespace CryptoNote
 
     void Miner::runWorkers(BlockMiningParameters blockMiningParameters, size_t threadCount)
     {
-        std::cout << InformationMsg("Started mining for difficulty of ")
-                  << InformationMsg(blockMiningParameters.difficulty) << InformationMsg(". Good luck! ;)\n");
+        //std::cout << InformationMsg("Started mining for difficulty of ")
+        //          << InformationMsg(blockMiningParameters.difficulty) << InformationMsg(". Good luck! ;)\n");
+        
+        boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
+        std::string time_str = boost::posix_time::to_simple_string(now);
+        std::cout << InformationMsg(time_str) << InformationMsg(" Started mining for every ")
+                  << InformationMsg(blockMiningParameters.checkTime) << InformationMsg("seconds. Good luck!\n");
+
 
         try
         {
@@ -89,7 +95,9 @@ namespace CryptoNote
 
                 blockMiningParameters.blockTemplate.nonce++;
             }
-
+            now = boost::posix_time::microsec_clock::local_time();
+            time_str = boost::posix_time::to_simple_string(now);
+            std::cout << InformationMsg(time_str) << InformationMsg(" Hash Calculation done! \n");
             m_workers.clear();
         }
         catch (const std::exception &e)
@@ -113,7 +121,7 @@ namespace CryptoNote
                 //hash 계산
                 Crypto::Hash hash = getBlockLongHash(block);
 
-                if (check_hash(hash, difficulty))
+                //if (check_hash(hash, difficulty))
                 {
                     if (!setStateBlockFound())
                     {
@@ -125,8 +133,8 @@ namespace CryptoNote
                     return;
                 }
 
-                incrementHashCount();
-                block.nonce += nonceStep;
+                //incrementHashCount();
+                //block.nonce += nonceStep;
             }
         }
         catch (const std::exception &e)

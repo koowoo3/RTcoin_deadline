@@ -68,6 +68,8 @@ namespace Miner
 
         void startBlockchainMonitoring();
 
+        void startBlockchainChecker(size_t checkTime);
+
         void stopBlockchainMonitoring();
 
         bool submitBlock(const CryptoNote::BlockTemplate &minedBlock);

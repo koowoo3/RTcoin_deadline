@@ -11,6 +11,7 @@ namespace Miner
     {
         BLOCK_MINED,
         BLOCKCHAIN_UPDATED,
+        BLOCK_MINE_START,
     };
 
     struct MinerEvent

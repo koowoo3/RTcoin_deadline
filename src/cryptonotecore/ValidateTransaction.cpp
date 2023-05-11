@@ -69,6 +69,8 @@ TransactionValidationResult ValidateTransaction::validate()
         return m_validationResult;
     }
 
+    /* Verify Deadline ==> reject 함수 여기 넣으면 될듯*/
+
     /* Validate the transaction extra is a reasonable size. */
     if (!validateTransactionExtra())
     {

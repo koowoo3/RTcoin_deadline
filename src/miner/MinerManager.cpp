@@ -44,6 +44,8 @@ namespace Miner
             {
                 CryptoNote::TransactionExtraMergeMiningTag mmTag;
                 mmTag.depth = 0;
+                //merkle root란 block에 저장된 트랜잭션들의 hash tree
+                //block body의 transaction들이 유효한지 빠르게 검사하는 역할
                 mmTag.merkleRoot = getMerkleRoot(blockTemplate);
 
                 blockTemplate.parentBlock.baseTransaction.extra.clear();
@@ -73,13 +75,17 @@ namespace Miner
 
     void MinerManager::start()
     {
+        //어떤 내용을 block으로 만들지 가져온다.
         CryptoNote::BlockMiningParameters params = requestMiningParameters();
+        //block time을 넣어주는데, first block time이 0이면 skip
         adjustBlockTemplate(params.blockTemplate);
 
         isRunning = true;
 
+        //다른 사람이 mining 했는지 확인하는 monitor. 새로운 block 발견하면 update event 날림
         startBlockchainMonitoring();
         std::thread reporter(std::bind(&MinerManager ::printHashRate, this));
+        // 내가 mining start
         startMining(params);
 
         eventLoop();
@@ -115,13 +121,16 @@ namespace Miner
             switch (event.type)
             {
                 case MinerEventType::BLOCK_MINED:
+                //내가 mine 성공함 
                 {
                     stopBlockchainMonitoring();
-
+                    
+                    //mine한 block 제출
                     if (submitBlock(m_minedBlock))
                     {
                         m_lastBlockTimestamp = m_minedBlock.timestamp;
 
+                        //./miner 켤때 limit 설정할 수 있음. 몇개만 채굴하고 끝내라고.
                         if (m_config.blocksLimit != 0 && ++blocksMined == m_config.blocksLimit)
                         {
                             std::cout << InformationMsg("Mined requested amount of blocks (")
@@ -138,6 +147,7 @@ namespace Miner
                     break;
                 }
                 case MinerEventType::BLOCKCHAIN_UPDATED:
+                //나 말고 다른 사람이 mining 함. 다시 parent block을 받아서 mining 시작
                 {
                     stopMining();
                     stopBlockchainMonitoring();
@@ -178,7 +188,9 @@ namespace Miner
             {
                 try
                 {
+                    //mine, threadCount는 HW dependent. ./miner 호출할때 옵션으로 넣을 수 있음
                     m_minedBlock = m_miner.mine(params, m_config.threadCount);
+                    //mine 완료 BLOCK_MINED 이벤트 보냄
                     pushEvent(BlockMinedEvent());
                 }
                 catch (const std::exception &)
@@ -194,12 +206,14 @@ namespace Miner
 
     void MinerManager::startBlockchainMonitoring()
     {
+        //dispatcher에 this() 함수 push.
         m_contextGroup.spawn(
             [this]()
             {
-                try
+                try 
                 {
                     m_blockchainMonitor.waitBlockchainUpdate();
+                    //새로 block hash가 들어오면 BLOCKCHAIN_UPDATED 이벤트 날림
                     pushEvent(BlockchainUpdatedEvent());
                 }
                 catch (const std::exception &)
@@ -221,8 +235,10 @@ namespace Miner
 
         writer.String(Common::toHex(toBinaryArray(minedBlock)));
 
+        //block을 binary로 만들어서 peer 들에게 http로 전달 
         auto res = m_httpClient->Post("/block", sb.GetString(), "application/json");
 
+        // 202는 http 응답 상태 코드에서 Accepted 의미
         if (res && res->status == 202)
         {
             std::cout << SuccessMsg("\nBlock found! Hash: ") << SuccessMsg(getBlockHash(minedBlock)) << "\n\n";
@@ -254,6 +270,7 @@ namespace Miner
             }
             writer.EndObject();
 
+            //http 서버에서 block template를 받아옴.
             auto res = m_httpClient->Post("/block/template", sb.GetString(), "application/json");
 
             if (!res)
@@ -294,8 +311,10 @@ namespace Miner
 
             CryptoNote::BlockMiningParameters params;
 
+            //서버에서 받은 response에서 difficulty 읽어옴. 
             params.difficulty = getUint64FromJSON(jsonBody, "difficulty");
-
+            
+            //서버에서 받은 response에서 blob(binary large object) 읽어옴
             std::vector<uint8_t> blob = Common::fromHex(getStringFromJSON(jsonBody, "blob"));
 
             if (!fromBinaryArray(params.blockTemplate, blob))

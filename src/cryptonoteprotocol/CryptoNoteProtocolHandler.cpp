@@ -437,6 +437,7 @@ namespace CryptoNote
         int ret = 0;
         handled = true;
 
+        //여기가 새로운 block 또는 transaction의 시발점
         switch (command)
         {
             HANDLE_NOTIFY(NOTIFY_NEW_BLOCK, handle_notify_new_block)

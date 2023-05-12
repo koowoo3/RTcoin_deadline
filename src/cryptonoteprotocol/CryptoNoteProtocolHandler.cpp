@@ -437,7 +437,8 @@ namespace CryptoNote
         int ret = 0;
         handled = true;
 
-        //여기가 새로운 block 또는 transaction의 시발점
+        //RTcoin
+        //server node에서 loop 돌면서 여기로 들어옴
         switch (command)
         {
             HANDLE_NOTIFY(NOTIFY_NEW_BLOCK, handle_notify_new_block)

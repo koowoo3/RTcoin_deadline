@@ -43,7 +43,6 @@ void BlockchainMonitor::waitBlockchainUpdate()
         lastBlockHash = requestLastBlockHash();
     }
 
-    //계속 돌면서 blockchain 상태 확인
     while (!m_stopped)
     {
         m_sleepingContext.spawn(
@@ -55,19 +54,16 @@ void BlockchainMonitor::waitBlockchainUpdate()
 
         m_sleepingContext.wait();
 
-        //깨서 새로운 Block Hash를 요청
         auto nextBlockHash = requestLastBlockHash();
 
         while (!nextBlockHash && !m_stopped)
         {
-            // 새로 들어온 Hash 없으면, m_pollingInterval에 한번씩 깨서 확인. default 값은 1
             std::this_thread::sleep_for(std::chrono::seconds(m_pollingInterval));
             nextBlockHash = requestLastBlockHash();
         }
 
         if (*lastBlockHash != *nextBlockHash)
         {
-            //새로운 block hash가 들어오면 나가기
             break;
         }
     }

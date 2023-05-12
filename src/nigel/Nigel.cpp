@@ -500,6 +500,7 @@ std::tuple<bool, std::vector<WalletTypes::RandomOuts>>
     return {false, {}};
 }
 
+//RTcoin
 std::tuple<bool, bool, std::string> Nigel::sendTransaction(const CryptoNote::Transaction tx) const
 {
     rapidjson::StringBuffer sb;

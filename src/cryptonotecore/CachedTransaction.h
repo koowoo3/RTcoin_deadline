@@ -43,8 +43,6 @@ namespace CryptoNote
 
         mutable std::optional<uint64_t> transactionFee;
 
-        mutable std::optional<uint64_t> transactionDeadline;
-
         mutable std::optional<uint64_t> transactionAmount;
     };
 

@@ -1812,6 +1812,7 @@ namespace CryptoNote
         }
     }
 
+    //RTcoin
     std::tuple<bool, std::string> Core::addTransactionToPool(const BinaryArray &transactionBinaryArray)
     {
         throwIfNotInitialized();
@@ -1836,6 +1837,7 @@ namespace CryptoNote
         return {true, ""};
     }
 
+    //RTcoin
     std::tuple<bool, std::string> Core::addTransactionToPool(CachedTransaction &&cachedTransaction)
     {
         TransactionValidatorState validatorState;

@@ -742,6 +742,7 @@ namespace SendTransaction
         subWallets->addUnconfirmedTransaction(tx);
     }
 
+    //RTcoin
     std::tuple<Error, Crypto::Hash>
         relayTransaction(const CryptoNote::Transaction tx, const std::shared_ptr<Nigel> daemon)
     {

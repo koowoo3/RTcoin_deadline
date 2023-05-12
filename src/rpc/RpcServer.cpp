@@ -105,7 +105,6 @@ RpcServer::RpcServer(
 
         .Get("/block/last", router(&RpcServer::getLastBlockHeader, RpcMode::Default, bodyNotRequired, syncNotRequired))
 
-        //miner에서 block template 받아오는 함수, getBlockTemplate
         .Post("/block/template", router(&RpcServer::getBlockTemplate, RpcMode::Default, bodyRequired, syncNotRequired))
 
         .Get("/fee", router(&RpcServer::fee, RpcMode::Default, bodyNotRequired, syncNotRequired))
@@ -594,6 +593,7 @@ std::tuple<Error, uint16_t>
     return {SUCCESS, 200};
 }
 
+//RTcoin
 std::tuple<Error, uint16_t>
     RpcServer::sendTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
 {
@@ -1013,7 +1013,6 @@ std::tuple<Error, uint16_t>
 
     uint32_t height;
 
-    //getBlockTemplate이 중요. block으로 만들 데이터 가져옴
     const auto [success, error] =
         m_core->getBlockTemplate(blockTemplate, publicViewKey, publicSpendKey, blobReserve, difficulty, height);
 

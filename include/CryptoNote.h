@@ -91,6 +91,10 @@ namespace CryptoNote
 
         uint64_t unlockTime;
 
+        //RTcoin
+        //TODO: need to specify the unit of deadline
+        uint64_t deadline;
+
         std::vector<TransactionInput> inputs;
 
         std::vector<TransactionOutput> outputs;

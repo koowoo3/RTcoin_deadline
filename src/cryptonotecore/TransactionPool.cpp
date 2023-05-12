@@ -19,6 +19,20 @@ namespace CryptoNote
         const CachedTransaction &left = lhs.cachedTransaction;
         const CachedTransaction &right = rhs.cachedTransaction;
 
+        //RTcoin
+        //We First sort by deadline
+        const uint64_t leftDeadline = left.getTransaction().deadline;
+        const uint64_t rightDeadline = right.getTransaction().deadline;
+
+        if (leftDeadline < rightDeadline)
+        {
+            return true;
+        }
+        else if (rightDeadline < leftDeadline)
+        {
+            return false;
+        }
+
         /* We want to work out if fee per byte(lhs) is greater than fee per byte(rhs).
          * Fee per byte is calculated by (lhs.fee / lhs.size) > (rhs.fee / rhs.size).
          * We can rearrange this to (lhs.fee * rhs.size) > (rhs.fee * lhs.size),
@@ -132,6 +146,7 @@ namespace CryptoNote
     {
     }
 
+    //RTcoin
     bool TransactionPool::pushTransaction(CachedTransaction &&transaction, TransactionValidatorState &&transactionState)
     {
         auto pendingTx = PendingTransactionInfo {static_cast<uint64_t>(time(nullptr)), std::move(transaction)};

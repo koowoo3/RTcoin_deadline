@@ -7,6 +7,7 @@
 #pragma once
 
 #include "BlockchainMonitor.h"
+#include "BlockchainChecker.h"
 #include "Miner.h"
 #include "MinerEvent.h"
 #include "MiningConfig.h"
@@ -36,15 +37,13 @@ namespace Miner
       private:
         System::ContextGroup m_contextGroup;
 
-        System::ContextGroup m_sleepingContext;
-
-        System::Dispatcher &m_dispatcher;
-
         CryptoNote::MiningConfig m_config;
 
         CryptoNote::Miner m_miner;
 
         BlockchainMonitor m_blockchainMonitor;
+
+        BlockchainChecker m_blockchainChecker;
 
         System::Event m_eventOccurred;
 
@@ -72,7 +71,7 @@ namespace Miner
 
         void startBlockchainMonitoring();
 
-        void startBlockchainChecker(size_t checkTime);
+        void startBlockchainChecker();
 
         void stopBlockchainMonitoring();
 

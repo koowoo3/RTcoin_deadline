@@ -1220,11 +1220,13 @@ namespace CryptoNote
         }
 
         auto currentDifficulty = cache->getDifficultyForNextBlock(previousBlockIndex);
+	/*
         if (currentDifficulty == 0)
         {
             logger(Logging::DEBUGGING) << "Block " << blockStr << " has difficulty overhead";
             return error::BlockValidationError::DIFFICULTY_OVERHEAD;
         }
+	*/
 
         // Copyright (c) 2018-2019, The Galaxia Project Developers
         // See https://github.com/turtlecoin/turtlecoin/issues/748 for more information
@@ -1335,11 +1337,13 @@ namespace CryptoNote
                 return error::BlockValidationError::CHECKPOINT_BLOCK_HASH_MISMATCH;
             }
         }
+	/*
         else if (!currency.checkProofOfWork(cachedBlock, currentDifficulty))
         {
             logger(Logging::DEBUGGING) << "Proof of work too weak for block " << blockStr;
             return error::BlockValidationError::PROOF_OF_WORK_TOO_WEAK;
         }
+	*/
 
         auto ret = error::AddBlockErrorCode::ADDED_TO_ALTERNATIVE;
 
@@ -1983,6 +1987,7 @@ namespace CryptoNote
             return {false, error};
         }
 
+	/*
         if (difficulty == 0)
         {
             std::string error = "Cannot create block template, difficulty is zero. Oh shit, you fucked up hard!";
@@ -1991,6 +1996,7 @@ namespace CryptoNote
 
             return {false, error};
         }
+	*/
 
         b = boost::value_initialized<BlockTemplate>();
         b.majorVersion = getBlockMajorVersionForHeight(height);

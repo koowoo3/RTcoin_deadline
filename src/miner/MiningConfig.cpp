@@ -64,6 +64,11 @@ namespace CryptoNote
             "#");
 
         options.add_options("Mining")(
+            "master", "Only master can mine blocks", cxxopts::value<bool>(master)->default_value("false")->implicit_value("true"))(
+            "checkTime",
+            "Mine every checktime period",
+            cxxopts::value<size_t>(checkTime)->default_value("10"),
+            "#")(
             "address", "The valid CryptoNote miner's address", cxxopts::value<std::string>(miningAddress), "<address>")(
             "block-timestamp-interval",
             "Timestamp incremental step for each subsequent block. May be set only if --first-block-timestamp has been "
@@ -80,7 +85,8 @@ namespace CryptoNote
             "#")(
             "threads",
             "The mining threads count. Must not exceed hardware capabilities.",
-            cxxopts::value<size_t>(threadCount)->default_value(std::to_string(CONCURRENCY_LEVEL)),
+            //cxxopts::value<size_t>(threadCount)->default_value(std::to_string(CONCURRENCY_LEVEL)),
+            cxxopts::value<size_t>(threadCount)->default_value("1"),
             "#");
 
         try
@@ -103,6 +109,10 @@ namespace CryptoNote
         else if (version) // Do we want to display the software version?
         {
             std::cout << InformationMsg(getProjectCLIHeader()) << std::endl;
+            exit(0);
+        } else if (!master)
+        {
+            std::cout << "You are not a master. You have no authority to mine" << std::endl;
             exit(0);
         }
 

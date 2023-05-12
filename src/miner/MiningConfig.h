@@ -32,9 +32,13 @@ namespace CryptoNote
 
         size_t blocksLimit;
 
+        size_t checkTime;
+
         uint64_t firstBlockTimestamp;
 
         int64_t blockTimestampInterval;
+
+        bool master;
 
         bool help;
 

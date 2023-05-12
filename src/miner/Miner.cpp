@@ -8,6 +8,7 @@
 #include "Miner.h"
 //////////////////
 
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <common/CheckDifficulty.h>
 #include <common/StringTools.h>
 #include <crypto/crypto.h>
@@ -39,6 +40,7 @@ namespace CryptoNote
         m_state = MiningState::MINING_IN_PROGRESS;
         m_miningStopped.clear();
 
+        //여기로!!! 위에는 error handling
         runWorkers(blockMiningParameters, threadCount);
 
         if (m_state == MiningState::MINING_STOPPED)
@@ -62,15 +64,25 @@ namespace CryptoNote
 
     void Miner::runWorkers(BlockMiningParameters blockMiningParameters, size_t threadCount)
     {
-        std::cout << InformationMsg("Started mining for difficulty of ")
-                  << InformationMsg(blockMiningParameters.difficulty) << InformationMsg(". Good luck! ;)\n");
+        //std::cout << InformationMsg("Started mining for difficulty of ")
+        //          << InformationMsg(blockMiningParameters.difficulty) << InformationMsg(". Good luck! ;)\n");
+        
+        boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
+        std::string time_str = boost::posix_time::to_simple_string(now);
+        std::cout << InformationMsg(time_str) << InformationMsg(" Started mining. Good luck\n");
 
         try
         {
+            /*
+            블록체인에서 Nonce는 "number used once"의 약자로, 블록의 헤더에 포함된 32비트 값입니다.
+            채굴자는 블록의 헤더 값 중 Nonce를 변경하면서 여러번 Hash 함수를 실행하고, 결과값이 일정한 조건을 만족하는 Hash를 찾아냅니다.
+            이때 Nonce 값은 무작위로 선택되어야 하며, 일정한 값으로 고정되어 있으면 해시 결과값을 만족시키는 것이 매우 어려워집니다. 
+            */
             blockMiningParameters.blockTemplate.nonce = Random::randomValue<uint32_t>();
 
             for (size_t i = 0; i < threadCount; ++i)
             {
+                //thread count별로 각각의 hash를 계산한다. 가장 먼저 조건에 맞는 hash가 사용되고 나머지 thread는 clear
                 m_workers.emplace_back(std::unique_ptr<System::RemoteContext<void>>(new System::RemoteContext<void>(
                     m_dispatcher,
                     std::bind(
@@ -82,7 +94,9 @@ namespace CryptoNote
 
                 blockMiningParameters.blockTemplate.nonce++;
             }
-
+            now = boost::posix_time::microsec_clock::local_time();
+            time_str = boost::posix_time::to_simple_string(now);
+            std::cout << InformationMsg(time_str) << InformationMsg(" Hash Calculation done! \n");
             m_workers.clear();
         }
         catch (const std::exception &e)
@@ -103,21 +117,23 @@ namespace CryptoNote
 
             while (m_state == MiningState::MINING_IN_PROGRESS)
             {
+                //hash 계산
                 Crypto::Hash hash = getBlockLongHash(block);
 
-                if (check_hash(hash, difficulty))
+                //if (check_hash(hash, difficulty))
                 {
                     if (!setStateBlockFound())
                     {
                         return;
                     }
-
+                    
+                    //조건에 맞는 hash찾음
                     m_block = block;
                     return;
                 }
 
-                incrementHashCount();
-                block.nonce += nonceStep;
+                //incrementHashCount();
+                //block.nonce += nonceStep;
             }
         }
         catch (const std::exception &e)

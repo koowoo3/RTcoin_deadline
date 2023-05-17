@@ -151,7 +151,7 @@ namespace SendTransaction
             const uint64_t unlockTime = 0;
 
             WalletTypes::TransactionResult txResult =
-                makeTransaction(mixin, daemon, ourInputs, paymentID, destinations, subWallets, unlockTime, extraData);
+                makeTransaction(mixin, daemon, ourInputs, paymentID, destinations, subWallets, unlockTime, extraData,0);
 
             tx = txResult.transaction;
             transactionOutputs = txResult.outputs;
@@ -235,7 +235,8 @@ namespace SendTransaction
         const std::shared_ptr<Nigel> daemon,
         const std::shared_ptr<SubWallets> subWallets,
         const bool sendAll,
-        const bool sendTransaction)
+        const bool sendTransaction,
+        const uint64_t deadline)
     {
         std::vector<std::pair<std::string, uint64_t>> destinations = {{destination, amount}};
 
@@ -261,7 +262,8 @@ namespace SendTransaction
             unlockTime,
             {},
             sendAll,
-            sendTransaction);
+            sendTransaction,
+            deadline);          //add deadline
     }
 
     std::tuple<Error, Crypto::Hash, WalletTypes::PreparedTransactionInfo> sendTransactionAdvanced(
@@ -276,7 +278,8 @@ namespace SendTransaction
         const uint64_t unlockTime,
         const std::vector<uint8_t> extraData,
         const bool sendAll,
-        const bool sendTransaction)
+        const bool sendTransaction,
+        const uint64_t deadline)   //add deadline
     {
         /* Append the fee transaction, if a fee is being used */
         const auto [feeAmount, feeAddress] = daemon->nodeFee();
@@ -367,7 +370,8 @@ namespace SendTransaction
 
                 /* Ok, we are using a fee per byte, lets take a guess at how
                  * large our fee is going to be, and then see if we have enough
-                 * inputs to cover it. */
+                 * inputs to cover it.*/
+                /*
                 if (!fee.isFixedFee)
                 {
                     const size_t transactionSize = Utilities::estimateTransactionSize(
@@ -397,7 +401,7 @@ namespace SendTransaction
                     const uint64_t estimatedAmount = totalAmount + estimatedFee;
 
                     /* Ok, we have enough inputs to add our estimated fee, lets
-                     * go ahead and try and make the transaction. */
+                     * go ahead and try and make the transaction. 
                     if (sumOfInputs >= estimatedAmount)
                     {
                         const auto [success, result, change, needed] = tryMakeFeePerByteTransaction(
@@ -431,14 +435,16 @@ namespace SendTransaction
                     else
                     {
                         /* Need to ensure we update this so if we run out of
-                         * inputs we correctly check if we have enough balance */
+                         * inputs we correctly check if we have enough balance 
                         requiredAmount = estimatedAmount;
                     }
                 }
-                else
-                {
+                */
+                //else
+                //{
+                
                     txResult = makeTransaction(
-                        mixin, daemon, ourInputs, paymentID, destinations, subWallets, unlockTime, extraData);
+                        mixin, daemon, ourInputs, paymentID, destinations, subWallets, unlockTime, extraData, deadline);
 
                     const uint64_t minFee = Utilities::getMinimumTransactionFee(
                         toBinaryArray(txResult.transaction).size(), daemon->networkBlockCount());
@@ -451,7 +457,7 @@ namespace SendTransaction
                     {
                         return {FEE_TOO_SMALL, Crypto::Hash(), WalletTypes::PreparedTransactionInfo()};
                     }
-                }
+                //}
             }
         }
 
@@ -594,7 +600,7 @@ namespace SendTransaction
             const auto destinations = setupDestinations(addressesAndAmounts, changeRequired, changeAddress);
 
             WalletTypes::TransactionResult txResult =
-                makeTransaction(mixin, daemon, ourInputs, paymentID, destinations, subWallets, unlockTime, extraData);
+                makeTransaction(mixin, daemon, ourInputs, paymentID, destinations, subWallets, unlockTime, extraData,0);
 
             const size_t actualTxSize = toBinaryArray(txResult.transaction).size();
 
@@ -742,7 +748,6 @@ namespace SendTransaction
         subWallets->addUnconfirmedTransaction(tx);
     }
 
-    //RTcoin
     std::tuple<Error, Crypto::Hash>
         relayTransaction(const CryptoNote::Transaction tx, const std::shared_ptr<Nigel> daemon)
     {
@@ -1286,7 +1291,8 @@ namespace SendTransaction
         const std::vector<WalletTypes::TransactionDestination> destinations,
         const std::shared_ptr<SubWallets> subWallets,
         const uint64_t unlockTime,
-        const std::vector<uint8_t> extraData)
+        const std::vector<uint8_t> extraData,
+        const uint64_t deadline)
     {
         /* Mix our inputs with fake ones from the network to hide who we are */
         const auto [mixinError, inputsAndFakes] = prepareRingParticipants(ourInputs, mixin, daemon);
@@ -1372,6 +1378,8 @@ namespace SendTransaction
         setupTX.version = CryptoNote::CURRENT_TRANSACTION_VERSION;
 
         setupTX.unlockTime = unlockTime;
+
+        setupTX.deadline = deadline;          //add deadline
 
         /* Convert from key inputs to the boost uglyness */
         setupTX.inputs = keyInputToTransactionInput(transactionInputs);

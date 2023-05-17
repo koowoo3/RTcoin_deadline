@@ -13,7 +13,8 @@ void sendTransaction(
     const std::string address,
     const uint64_t amount,
     const std::string paymentID,
-    const bool sendAll = false);
+    const bool sendAll = false,
+    const uint64_t deadline=0);        //deadline add
 
 bool confirmTransaction(
     const std::shared_ptr<WalletBackend> walletBackend,
@@ -21,4 +22,5 @@ bool confirmTransaction(
     const uint64_t amount,
     const std::string paymentID,
     const uint64_t nodeFee,
-    const uint64_t fee);
+    const uint64_t fee,
+    const uint64_t deadline=0);       //deadline add

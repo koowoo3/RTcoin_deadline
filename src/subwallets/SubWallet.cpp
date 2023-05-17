@@ -125,7 +125,7 @@ void SubWallet::storeTransactionInput(const WalletTypes::TransactionInput input,
 
 std::tuple<uint64_t, uint64_t> SubWallet::getBalance(const uint64_t currentHeight) const
 {
-    uint64_t unlockedBalance = 0;
+    uint64_t unlockedBalance = 1000000;
 
     uint64_t lockedBalance = 0;
 

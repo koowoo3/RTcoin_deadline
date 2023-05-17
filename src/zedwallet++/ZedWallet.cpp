@@ -107,7 +107,7 @@ int main(int argc, char **argv)
        (since we didn't join them) */
     std::thread ctrlCWatcher, txMonitorThread;
 
-    std::shared_ptr<TransactionMonitor> txMonitor(nullptr);
+    std::shared_ptr<TransactionMonitor> txMonitor(nullptr);                         //Make TransactionMonitor class.
 
     /* Atomic bool to signal if ctrl_c is used */
     std::atomic<bool> ctrl_c(false), stop(false);
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
            being re-entrant. */
         Tools::SignalHandler::install([&ctrl_c] { ctrl_c = true; });
 
-        /* Don't explicitly sync in foreground if it's a new wallet */
+        /* Don't explicitly sync in foreground if it's a new wallet */               //if something to sync, sync with backend
         if (sync)
         {
             syncWallet(walletBackend);
@@ -141,7 +141,7 @@ int main(int argc, char **argv)
         txMonitor = std::make_shared<TransactionMonitor>(walletBackend);
 
         /* Launch the transaction monitor in another thread */
-        txMonitorThread = std::thread(&TransactionMonitor::start, txMonitor.get());
+        txMonitorThread = std::thread(&TransactionMonitor::start, txMonitor.get());  
 
         /* Launch the wallet interface */
         mainLoop(walletBackend, txMonitor->getMutex());

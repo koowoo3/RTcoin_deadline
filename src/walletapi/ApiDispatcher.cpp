@@ -925,6 +925,8 @@ std::tuple<Error, uint16_t> ApiDispatcher::makeBasicTransaction(
 
     const uint64_t amount = getUint64FromJSON(body, "amount");
 
+    const uint64_t deadline = getUint64FromJSON(body, "deadline");    //deadline add
+
     std::string paymentID;
 
     if (hasMember(body, "paymentID"))
@@ -937,7 +939,8 @@ std::tuple<Error, uint16_t> ApiDispatcher::makeBasicTransaction(
         amount,
         paymentID,
         false, /* Don't send all */
-        sendTransaction);
+        sendTransaction,
+        deadline);      //add deadline
 
     if (error)
     {
@@ -998,6 +1001,8 @@ std::tuple<Error, uint16_t> ApiDispatcher::makeAdvancedTransaction(
 
         destinations.emplace_back(address, amount);
     }
+
+    const uint64_t deadline = getUint64FromJSON(body, "deadline");    //deadline add
 
     uint64_t mixin;
 
@@ -1076,7 +1081,8 @@ std::tuple<Error, uint16_t> ApiDispatcher::makeAdvancedTransaction(
         unlockTime,
         extraData,
         false, /* Don't send all */
-        sendTransaction);
+        sendTransaction,
+        deadline);                  //deadline  add
 
     if (error)
     {

@@ -44,7 +44,7 @@ void transfer(const std::shared_ptr<WalletBackend> walletBackend, const bool sen
     {
         cancel();
         return;
-    }
+    } 
 
     std::cout << "\n";
 
@@ -87,6 +87,17 @@ void transfer(const std::shared_ptr<WalletBackend> walletBackend, const bool sen
         }
     }
 
+    bool success;
+    uint64_t deadline;
+    
+    std::tie(success, deadline) = getDeadline("what time do you want to end from now?", cancelAllowed); 
+
+    /*if(!success)  //deadline이 불가능하다면 cancel 해준다. + deadline 관련하여 불가능 조건찾아야함. 
+    {
+        cancel();
+        return;
+    }*/
+    
     if (nodeFee >= unlockedBalance && sendAll)
     {
         std::cout << WarningMsg("\nYou don't have enough funds to cover "
@@ -100,7 +111,7 @@ void transfer(const std::shared_ptr<WalletBackend> walletBackend, const bool sen
         return;
     }
 
-    sendTransaction(walletBackend, address, amount, paymentID, sendAll);
+    sendTransaction(walletBackend, address, amount, paymentID, sendAll, deadline);
 }
 
 void sendTransaction(
@@ -108,7 +119,8 @@ void sendTransaction(
     const std::string address,
     const uint64_t amount,
     const std::string paymentID,
-    const bool sendAll)
+    const bool sendAll,
+    const uint64_t deadline)             //add deadline
 {
     const auto unlockedBalance = walletBackend->getTotalUnlockedBalance();
 
@@ -119,7 +131,7 @@ void sendTransaction(
     /* The total balance required with fees added (Doesn't include network
      * fee, since that's done per byte and is hard to guess) */
     const uint64_t total = amount + nodeFee;
-
+    std::cout<<unlockedBalance;
     if (total > unlockedBalance)
     {
         std::cout << WarningMsg("\nYou don't have enough funds to cover "
@@ -137,7 +149,7 @@ void sendTransaction(
     WalletTypes::PreparedTransactionInfo preparedTransaction;
 
     std::tie(error, std::ignore, preparedTransaction) = walletBackend->sendTransactionBasic(
-        address, amount, paymentID, sendAll, false /* Don't relay to network */
+        address, amount, paymentID, sendAll, false, deadline /* Don't relay to network */             //add deadline
     );
 
     if (error == NOT_ENOUGH_BALANCE)
@@ -170,7 +182,7 @@ void sendTransaction(
 
         /* Resend the transaction */
         std::tie(error, std::ignore, preparedTransaction) = walletBackend->sendTransactionBasic(
-            address, amount, paymentID, sendAll, false /* Don't relay to network */
+            address, amount, paymentID, sendAll, false, deadline /* Don't relay to network */
         );
 
         /* Still too big, split it up (with users approval) */
@@ -196,7 +208,7 @@ void sendTransaction(
      * the fee worked out. */
     const uint64_t actualAmount = sendAll ? unlockedBalance - nodeFee - preparedTransaction.fee : amount;
 
-    if (!confirmTransaction(walletBackend, address, actualAmount, paymentID, nodeFee, preparedTransaction.fee))
+    if (!confirmTransaction(walletBackend, address, actualAmount, paymentID, nodeFee, preparedTransaction.fee, deadline))         //deadline add
     {
         cancel();
         return;
@@ -222,7 +234,8 @@ bool confirmTransaction(
     const uint64_t amount,
     const std::string paymentID,
     const uint64_t nodeFee,
-    const uint64_t fee)
+    const uint64_t fee, 
+    const uint64_t deadline)                                //deadline add
 {
     std::cout << InformationMsg("\nConfirm Transaction?\n");
 

@@ -729,12 +729,13 @@ std::tuple<Error, Crypto::Hash, WalletTypes::PreparedTransactionInfo> WalletBack
     const uint64_t amount,
     const std::string paymentID,
     const bool sendAll,
-    const bool sendTransaction)
+    const bool sendTransaction,
+    const uint64_t deadline)                        //deadline add
 {
     std::scoped_lock lock(m_transactionMutex);
 
     const auto [error, hash, preparedTransaction] = SendTransaction::sendTransactionBasic(
-        destination, amount, paymentID, m_daemon, m_subWallets, sendAll, sendTransaction);
+        destination, amount, paymentID, m_daemon, m_subWallets, sendAll, sendTransaction, deadline);
 
     if (!sendTransaction && !error)
     {
@@ -754,7 +755,8 @@ std::tuple<Error, Crypto::Hash, WalletTypes::PreparedTransactionInfo> WalletBack
     const uint64_t unlockTime,
     const std::vector<uint8_t> extraData,
     const bool sendAll,
-    const bool sendTransaction)
+    const bool sendTransaction,
+    const uint64_t deadline)                                //deadline add
 {
     std::scoped_lock lock(m_transactionMutex);
 
@@ -770,7 +772,8 @@ std::tuple<Error, Crypto::Hash, WalletTypes::PreparedTransactionInfo> WalletBack
         unlockTime,
         extraData,
         sendAll,
-        sendTransaction);
+        sendTransaction, 
+        deadline);
 
     if (!sendTransaction && !error)
     {

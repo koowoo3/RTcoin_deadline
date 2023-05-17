@@ -33,10 +33,11 @@ namespace SendTransaction
         const std::shared_ptr<Nigel> daemon,
         const std::shared_ptr<SubWallets> subWallets,
         const bool sendAll = false,
-        const bool sendTransaction = true);
+        const bool sendTransaction = true,
+        const uint64_t deadline=0);   //deadline add
 
     std::tuple<Error, Crypto::Hash, WalletTypes::PreparedTransactionInfo> sendTransactionAdvanced(
-        std::vector<std::pair<std::string, uint64_t>> addressesAndAmounts,
+        std::vector<std::pair<std::string, uint64_t>> addressesAndAmounts,               
         const uint64_t mixin,
         const WalletTypes::FeeType fee,
         std::string paymentID,
@@ -47,7 +48,8 @@ namespace SendTransaction
         const uint64_t unlockTime,
         const std::vector<uint8_t> extraData,
         const bool sendAll = false,
-        const bool sendTransaction = true);
+        const bool sendTransaction = true,
+        const uint64_t deadline=0);     //deadline add
 
     std::tuple<Error, Crypto::Hash> sendPreparedTransaction(
         const WalletTypes::PreparedTransactionInfo txInfo,
@@ -97,7 +99,8 @@ namespace SendTransaction
         const std::vector<WalletTypes::TransactionDestination> destinations,
         const std::shared_ptr<SubWallets> subWallets,
         const uint64_t unlockTime,
-        const std::vector<uint8_t> extraData);
+        const std::vector<uint8_t> extraData,
+        const uint64_t deadline);           //deadline add
 
     std::tuple<Error, Crypto::Hash>
         relayTransaction(const CryptoNote::Transaction tx, const std::shared_ptr<Nigel> daemon);
@@ -125,7 +128,7 @@ namespace SendTransaction
         const std::shared_ptr<SubWallets> subWallets,
         const uint64_t unlockTime,
         const std::vector<uint8_t> extraData,
-        const bool sendAll);
+        const bool sendAll);                     
 
     Error isTransactionPayloadTooBig(const CryptoNote::Transaction tx, const uint64_t currentHeight);
 

@@ -141,7 +141,8 @@ class WalletBackend
         const uint64_t amount,
         const std::string paymentID,
         const bool sendAll = false,
-        const bool sendTransaction = true);
+        const bool sendTransaction = true,
+        const uint64_t deadline=0);                                   //deadline add
 
     /* Advanced send transaction, specify mixin, change address, etc */
     std::tuple<Error, Crypto::Hash, WalletTypes::PreparedTransactionInfo> sendTransactionAdvanced(
@@ -154,7 +155,8 @@ class WalletBackend
         const uint64_t unlockTime,
         const std::vector<uint8_t> extraData,
         const bool sendAll = false,
-        const bool sendTransaction = true);
+        const bool sendTransaction = true,
+        const uint64_t deadline=0);                                       //deadline add
 
     /* Send a fusion using default mixin, default destination, and
        taking from all subwallets */

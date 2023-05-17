@@ -18,6 +18,8 @@ std::string getPaymentID(const std::string msg, const bool cancelAllowed);
 
 std::tuple<bool, uint64_t> getAmountToAtomic(const std::string msg, const bool cancelAllowed);
 
+std::tuple<bool, uint64_t> getDeadline(const std::string msg, const bool cancelAllowed);
+
 template<typename T> std::string getInput(const std::vector<T> &availableCommands, const std::string prompt);
 
 std::tuple<std::string, uint16_t, bool> getDaemonAddress();
